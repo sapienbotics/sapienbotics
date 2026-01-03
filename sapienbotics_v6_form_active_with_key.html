@@ -1,0 +1,2389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SapienBotics | AI Systems Engineering, Automation & Custom Software</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-black: #111111;
+            --tertiary-black: #1a1a1a;
+            --card-black: #141414;
+            --accent-cyan: #00f5d4;
+            --accent-purple: #9b5de5;
+            --accent-pink: #f15bb5;
+            --accent-orange: #ff6b35;
+            --text-white: #ffffff;
+            --text-gray: #a0a0a0;
+            --text-dark-gray: #666666;
+            --gradient-1: linear-gradient(135deg, #00f5d4 0%, #00bbf9 50%, #9b5de5 100%);
+            --gradient-2: linear-gradient(135deg, #9b5de5 0%, #f15bb5 100%);
+            --gradient-3: linear-gradient(135deg, #00f5d4 0%, #00bbf9 100%);
+            --glow-cyan: 0 0 60px rgba(0, 245, 212, 0.3);
+            --glow-purple: 0 0 60px rgba(155, 93, 229, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--primary-black);
+            color: var(--text-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary-black);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-cyan);
+            border-radius: 4px;
+        }
+
+        /* Noise Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.8rem 5%;
+            background: rgba(10, 10, 10, 0.95);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            font-family: 'Space Mono', monospace;
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-white);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--gradient-1);
+            color: var(--primary-black);
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-cyan);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 80px rgba(0, 245, 212, 0.5);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background: var(--text-white);
+            margin: 6px 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 5% 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 245, 212, 0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(155, 93, 229, 0.1), transparent),
+                radial-gradient(ellipse 50% 30% at 20% 80%, rgba(241, 91, 181, 0.08), transparent);
+        }
+
+        .hero-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black, transparent);
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 245, 212, 0.1);
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.5); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease 0.1s forwards;
+            opacity: 0;
+        }
+
+        .hero h1 .gradient-text {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            margin-bottom: 2.5rem;
+            max-width: 550px;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+            opacity: 0;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--primary-black);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-cyan);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 100px rgba(0, 245, 212, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-white);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .hero-visual {
+            position: relative;
+            animation: fadeInRight 1s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        .hero-orb {
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(0, 245, 212, 0.4), transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(155, 93, 229, 0.4), transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(241, 91, 181, 0.2), transparent 60%);
+            filter: blur(60px);
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+
+        .hero-3d {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            height: 350px;
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 20px;
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: cardFloat 6s ease-in-out infinite;
+        }
+
+        .hero-3d-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-1);
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .hero-3d-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-cyan);
+            text-align: center;
+        }
+
+        .hero-3d-code {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dark-gray);
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20px, 20px) scale(1.05); }
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translate(-50%, -50%) rotateY(0deg) rotateX(0deg); }
+            25% { transform: translate(-50%, -55%) rotateY(5deg) rotateX(-5deg); }
+            45% { transform: translate(-50%, -45%) rotateY(-5deg) rotateX(5deg); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: var(--secondary-black);
+            padding: 3rem 5%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stats-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        /* Trusted By */
+        .trusted-by {
+            padding: 4rem 5%;
+            background: var(--primary-black);
+        }
+
+        .trusted-by h3 {
+            text-align: center;
+            color: var(--text-dark-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 2rem;
+        }
+
+        .logos-track {
+            display: flex;
+            gap: 4rem;
+            animation: scroll 20s linear infinite;
+            width: max-content;
+        }
+
+        .logos-wrapper {
+            overflow: hidden;
+            mask-image: linear-gradient(90deg, transparent, black 10%, black 55%, transparent);
+        }
+
+        .logo-item {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            color: var(--text-dark-gray);
+            opacity: 0.5;
+            white-space: nowrap;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-item:hover {
+            opacity: 1;
+            color: var(--accent-cyan);
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Services Section */
+        .services {
+            padding: 8rem 5%;
+            background: var(--primary-black);
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 5rem;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: rgba(155, 93, 229, 0.1);
+            border: 1px solid rgba(155, 93, 229, 0.3);
+            color: var(--accent-purple);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        .services-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--card-black);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 245, 212, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card:nth-child(1) .service-icon { background: rgba(0, 245, 212, 0.15); }
+        .service-card:nth-child(2) .service-icon { background: rgba(155, 93, 229, 0.15); }
+        .service-card:nth-child(3) .service-icon { background: rgba(241, 91, 181, 0.15); }
+        .service-card:nth-child(4) .service-icon { background: rgba(255, 107, 53, 0.15); }
+        .service-card:nth-child(5) .service-icon { background: rgba(0, 187, 249, 0.15); }
+        .service-card:nth-child(6) .service-icon { background: rgba(0, 245, 212, 0.15); }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .service-card p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .service-features {
+            list-style: none;
+        }
+
+        .service-features li {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-features li:last-child {
+            border-bottom: none;
+        }
+
+        .service-features li::before {
+            content: '→';
+            color: var(--accent-cyan);
+        }
+
+        /* Featured Service */
+        .featured-service {
+            padding: 8rem 5%;
+            background: var(--secondary-black);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse 50% 50% at 80% 50%, rgba(155, 93, 229, 0.1), transparent),
+                radial-gradient(ellipse 40% 40% at 20% 50%, rgba(0, 245, 212, 0.08), transparent);
+        }
+
+        .featured-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .featured-text .section-tag {
+            background: rgba(0, 245, 212, 0.1);
+            border-color: rgba(0, 245, 212, 0.3);
+            color: var(--accent-cyan);
+        }
+
+        .featured-text h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .featured-text p {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .featured-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .featured-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-gray);
+        }
+
+        .featured-list li::before {
+            content: '✓';
+            color: var(--accent-cyan);
+            font-weight: bold;
+            background: rgba(0, 245, 212, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .featured-visual {
+            position: relative;
+        }
+
+        .featured-card {
+            background: var(--card-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .featured-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .featured-card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .featured-card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .featured-card-subtitle {
+            color: var(--text-dark-gray);
+            font-size: 0.85rem;
+        }
+
+        .agent-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .flow-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-cyan);
+        }
+
+        .flow-item:nth-child(2) { border-left-color: var(--accent-purple); }
+        .flow-item:nth-child(3) { border-left-color: var(--accent-pink); }
+
+        .flow-number {
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 245, 212, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+        }
+
+        .flow-item:nth-child(2) .flow-number {
+            background: rgba(155, 93, 229, 0.1);
+            color: var(--accent-purple);
+        }
+
+        .flow-item:nth-child(3) .flow-number {
+            background: rgba(241, 91, 181, 0.1);
+            color: var(--accent-pink);
+        }
+
+        .flow-text {
+            flex: 1;
+        }
+
+        .flow-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .flow-desc {
+            color: var(--text-dark-gray);
+            font-size: 0.85rem;
+        }
+
+        /* Process Section */
+        .process {
+            padding: 8rem 5%;
+            background: var(--primary-black);
+        }
+
+        .process-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            position: relative;
+        }
+
+        .process-grid::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink), var(--accent-orange));
+            z-index: 0;
+        }
+
+        .process-step {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .process-number {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--card-black);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            transition: all 0.3s ease;
+        }
+
+        .process-step:nth-child(2) .process-number { border-color: var(--accent-purple); color: var(--accent-purple); }
+        .process-step:nth-child(3) .process-number { border-color: var(--accent-pink); color: var(--accent-pink); }
+        .process-step:nth-child(4) .process-number { border-color: var(--accent-orange); color: var(--accent-orange); }
+
+        .process-step:hover .process-number {
+            transform: scale(1.1);
+            box-shadow: var(--glow-cyan);
+        }
+
+        .process-step h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .process-step p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Case Studies */
+        .case-studies {
+            padding: 8rem 5%;
+            background: var(--secondary-black);
+        }
+
+        .cases-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .case-card {
+            background: var(--card-black);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .case-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 245, 212, 0.2);
+        }
+
+        .case-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--tertiary-black), var(--card-black));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-1);
+            opacity: 0.1;
+        }
+
+        .case-industry {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            color: var(--accent-cyan);
+        }
+
+        .case-content {
+            padding: 2rem;
+        }
+
+        .case-tag {
+            display: inline-block;
+            background: rgba(0, 245, 212, 0.1);
+            color: var(--accent-cyan);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .case-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .case-content p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .case-metrics {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .metric-label {
+            color: var(--text-dark-gray);
+            font-size: 0.85rem;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 8rem 5%;
+            background: var(--primary-black);
+        }
+
+        .testimonials-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--card-black);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 5rem;
+            color: rgba(0, 245, 212, 0.1);
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .testimonial-text {
+            color: var(--text-gray);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .author-info h4 {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .author-info p {
+            color: var(--text-dark-gray);
+            font-size: 0.85rem;
+        }
+
+        /*  Section */
+        .pricing {
+            padding: 8rem 5%;
+            background: var(--secondary-black);
+        }
+
+        .pricing-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            background: var(--card-black);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .pricing-card.popular {
+            border-color: var(--accent-cyan);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.popular::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-1);
+            color: var(--primary-black);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pricing-card.popular:hover {
+            transform: scale(1.05) translateY(-5px);
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pricing-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-desc {
+            color: var(--text-dark-gray);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            color: var(--text-dark-gray);
+            font-weight: 400;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--accent-cyan);
+            font-weight: bold;
+        }
+
+        .pricing-cta {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 5%;
+            background: var(--primary-black);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse 60% 60% at 50% 100%, rgba(0, 245, 212, 0.15), transparent),
+                radial-gradient(ellipse 40% 40% at 20% 50%, rgba(155, 93, 229, 0.1), transparent);
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-content h2 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-content p {
+            color: var(--text-gray);
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .cta-input {
+            flex: 1;
+            background: var(--card-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            color: var(--text-white);
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.1);
+        }
+
+        .cta-input::placeholder {
+            color: var(--text-dark-gray);
+        }
+
+        /* Contact Form Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            padding: 3rem;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--text-white);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-header p {
+            color: var(--text-gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            background: var(--tertiary-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text-white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-group select option {
+            background: var(--card-black);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary-black);
+            padding: 5rem 5% 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .footer-brand p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            max-width: 300px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: var(--tertiary-black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--accent-cyan);
+            color: var(--primary-black);
+            transform: translateY(-3px);
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom a {
+            color: var(--text-gray);
+            text-decoration: none;
+            margin-left: 2rem;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 400px;
+            height: 100vh;
+            background: var(--secondary-black);
+            z-index: 10001;
+            padding: 2rem;
+            transition: right 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            display: none;
+        }
+
+        .mobile-menu-overlay.active {
+            display: block;
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            color: var(--text-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: 1.5rem;
+        }
+
+        .mobile-nav-links a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-description {
+                margin: 0 auto 2.5rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .featured-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .featured-text {
+                text-align: center;
+            }
+
+            .process-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 3rem;
+            }
+
+            .process-grid::before {
+                display: none;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .pricing-card.popular {
+                transform: none;
+            }
+
+            .pricing-card.popular:hover {
+                transform: translateY(-5px);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .nav-links, .nav-cta {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 7rem 5% 3rem;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .cta-form {
+                flex-direction: column;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .footer-brand p {
+                max-width: none;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .footer-bottom a {
+                margin-left: 0;
+                margin: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+            }
+        }
+    
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.1rem;
+    line-height: 1.25;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .card, .case-study {
+    padding: 1.5rem;
+  }
+
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  footer {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+</style>
+</head>
+<body>
+    <div class="noise-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="logo">Sapien<span>botics</span></a>
+        <ul class="nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#case-studies">Case Studies</a></li>
+            <li><a href="#pricing"></a></li>
+        </ul>
+        <a href="#" class="nav-cta" onclick="openModal()">Get Free AI Audit</a>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <a href="#" class="logo">Sapien<span>botics</span></a>
+            <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="#services" onclick="toggleMobileMenu()">Services</a></li>
+            <li><a href="#process" onclick="toggleMobileMenu()">Process</a></li>
+            <li><a href="#case-studies" onclick="toggleMobileMenu()">Case Studies</a></li>
+            <li><a href="#pricing" onclick="toggleMobileMenu()"></a></li>
+            <li><a href="#" onclick="openModal(); toggleMobileMenu();" style="color: var(--accent-cyan);">Get Free AI Audit</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">AI Systems Engineering & Automation</div>
+                <h1>We Design & Build <span class="gradient-text">Production-Grade AI Systems</span></h1>
+                <p class="hero-description">SapienBotics builds autonomous AI systems, workflow orchestration platforms, and AI-native applications designed for real-world scale, reliability, and long-term operation.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn-primary" onclick="openModal()">
+                        <span>Schedule Free AI Audit</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#services" class="btn-secondary">
+                        <span>Explore Services</span>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-orb"></div>
+                <div class="hero-3d">
+                    <div class="hero-3d-icon">🤖</div>
+                    <div class="hero-3d-text">AI Agent Online</div>
+                    <div class="hero-3d-code">status: processing_request</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">150+</div>
+                <div class="stat-label">Production AI Systems Delivered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">60%</div>
+                <div class="stat-label">Operational Efficiency Gains</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">600–800</div>
+                <div class="stat-label">Apps & Platforms Connected</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Client Satisfaction</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trusted By -->
+    <section class="trusted-by">
+        <h3>Trusted by Innovative Companies</h3>
+        <div class="logos-wrapper">
+            <div class="logos-track">
+                <span class="logo-item">TECHSTARTUP</span>
+                <span class="logo-item">FINNOVATE</span>
+                <span class="logo-item">HEALTHAI</span>
+                <span class="logo-item">RETAILPLUS</span>
+                <span class="logo-item">LOGISMART</span>
+                <span class="logo-item">EDUTECH</span>
+                <span class="logo-item">PROPTECH</span>
+                <span class="logo-item">AGROAI</span>
+                <span class="logo-item">TECHSTARTUP</span>
+                <span class="logo-item">FINNOVATE</span>
+                <span class="logo-item">HEALTHAI</span>
+                <span class="logo-item">RETAILPLUS</span>
+                <span class="logo-item">LOGISMART</span>
+                <span class="logo-item">EDUTECH</span>
+                <span class="logo-item">PROPTECH</span>
+                <span class="logo-item">AGROAI</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="section-header">
+            <span class="section-tag">Our Services</span>
+            <h2>AI Solutions That Drive Results</h2>
+            <p>From intelligent automation to custom AI development, we deliver solutions that transform how you operate.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🤖</div>
+                <h3>Autonomous AI Agent Systems</h3>
+                <p>Intelligent AI agents that handle customer support, sales, and internal operations 24/7 with human-like precision.</p>
+                <ul class="service-features">
+                    <li>Multi-channel deployment</li>
+                    <li>Natural language understanding</li>
+                    <li>CRM & tool integration</li>
+                    <li>Continuous learning</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">⚡</div>
+                <h3>Workflow Orchestration & Automation</h3>
+                <p>Automate repetitive workflows, eliminate bottlenecks, and achieve operational excellence with AI-powered systems.</p>
+                <ul class="service-features">
+                    <li>Workflow orchestration</li>
+                    <li>Document processing</li>
+                    <li>Data synchronization</li>
+                    <li>Error reduction</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🧠</div>
+                <h3>LLM & Knowledge Systems</h3>
+                <p>Leverage cutting-edge LLMs for content creation, data analysis, and intelligent decision-making systems.</p>
+                <ul class="service-features">
+                    <li>Custom LLM fine-tuning</li>
+                    <li>RAG implementations</li>
+                    <li>AI content pipelines</li>
+                    <li>Knowledge management</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📱</div>
+                <h3>Web & Mobile Application Engineering (With or Without AI)</h3>
+                <p>Custom web and mobile applications infused with AI capabilities for smarter, more engaging user experiences.</p>
+                <ul class="service-features">
+                    <li>AI-native architecture</li>
+                    <li>Real-time personalization</li>
+                    <li>Predictive features</li>
+                    <li>Scalable infrastructure</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📊</div>
+                <h3>AI-Driven Acquisition Systems</h3>
+                <p>Automated multi-platform outreach systems that generate thousands of qualified leads daily.</p>
+                <ul class="service-features">
+                    <li>Lead scoring & qualification</li>
+                    <li>Personalized outreach</li>
+                    <li>Multi-channel campaigns</li>
+                    <li>Conversion optimization</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🎯</div>
+                <h3>AI Architecture & Advisory</h3>
+                <p>Expert guidance to identify AI opportunities, build roadmaps, and ensure successful implementation.</p>
+                <ul class="service-features">
+                    <li>AI readiness assessment</li>
+                    <li>Use case discovery</li>
+                    <li>ROI projections</li>
+                    <li>Implementation roadmap</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+
+<section class="process">
+  <div class="section-header">
+    <span class="section-tag">Engineering</span>
+    <h2>Technical Stack & Engineering Approach</h2>
+    <p>
+      SapienBotics builds AI and software systems using a pragmatic, production-first technology stack.
+      Tooling is selected based on reliability, scalability, and long-term maintainability—not trends.
+    </p>
+  </div>
+  <div class="process-grid">
+    <div class="process-step">
+      <h3>Backend & Infrastructure</h3>
+      <p>Cloud-native backends using AWS, Firebase, Supabase, and containerized services with clear data boundaries.</p>
+    </div>
+    <div class="process-step">
+      <h3>AI & Automation</h3>
+      <p>LLMs, speech, vision, and workflow orchestration using n8n and custom services with human-in-the-loop design.</p>
+    </div>
+    <div class="process-step">
+      <h3>Web & Mobile</h3>
+      <p>Modern web and mobile applications built with Flutter, FlutterFlow, and web frameworks as required.</p>
+    </div>
+    <div class="process-step">
+      <h3>Production Discipline</h3>
+      <p>Monitoring, logging, version control, rollback strategies, and staged deployments as standard practice.</p>
+    </div>
+  </div>
+</section>
+
+
+    <!-- Featured Service: AI Agents -->
+    <section class="featured-service">
+        <div class="featured-bg"></div>
+        <div class="featured-content">
+            <div class="featured-text">
+                <span class="section-tag">Featured Solution</span>
+                <h2>Autonomous AI Agents That Work For You 24/7</h2>
+                <p>Our AI agents don't just respond – they reason, plan, and execute complex tasks across your entire tech stack. From handling customer inquiries to managing operations, they're your digital workforce.</p>
+                <ul class="featured-list">
+                    <li>Handle 80% of customer interactions autonomously</li>
+                    <li>Integrate with 600–800 apps and platforms</li>
+                    <li>Learn and improve from every interaction</li>
+                    <li>Scale infinitely without hiring</li>
+                </ul>
+                <a href="#" class="btn-primary" onclick="openModal()">Build Your AI Agent</a>
+            </div>
+            <div class="featured-visual">
+                <div class="featured-card">
+                    <div class="featured-card-header">
+                        <div class="featured-card-icon">🤖</div>
+                        <div>
+                            <div class="featured-card-title">AI Agent Workflow</div>
+                            <div class="featured-card-subtitle">Autonomous task execution</div>
+                        </div>
+                    </div>
+                    <div class="agent-flow">
+                        <div class="flow-item">
+                            <div class="flow-number">1</div>
+                            <div class="flow-text">
+                                <div class="flow-title">Receive & Understand</div>
+                                <div class="flow-desc">Process natural language requests</div>
+                            </div>
+                        </div>
+                        <div class="flow-item">
+                            <div class="flow-number">2</div>
+                            <div class="flow-text">
+                                <div class="flow-title">Reason & Plan</div>
+                                <div class="flow-desc">Break down into actionable steps</div>
+                            </div>
+                        </div>
+                        <div class="flow-item">
+                            <div class="flow-number">3</div>
+                            <div class="flow-text">
+                                <div class="flow-title">Execute & Learn</div>
+                                <div class="flow-desc">Complete tasks & optimize</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process" id="process">
+        <div class="section-header">
+            <span class="section-tag">Our Process</span>
+            <h2>From Discovery to Deployment</h2>
+            <p>A proven methodology that ensures your AI project delivers measurable results.</p>
+        </div>
+        <div class="process-grid">
+            <div class="process-step">
+                <div class="process-number">01</div>
+                <h3>AI Audit Call</h3>
+                <p>We analyze your business, identify bottlenecks, and discover high-impact AI opportunities.</p>
+            </div>
+            <div class="process-step">
+                <div class="process-number">02</div>
+                <h3>Strategy & Design</h3>
+                <p>Custom solution architecture with clear timelines, milestones, and ROI projections.</p>
+            </div>
+            <div class="process-step">
+                <div class="process-number">03</div>
+                <h3>Build & Iterate</h3>
+                <p>Agile development with continuous feedback loops and rapid prototyping.</p>
+            </div>
+            <div class="process-step">
+                <div class="process-number">04</div>
+                <h3>Deploy & Scale</h3>
+                <p>Seamless deployment with ongoing support, monitoring, and optimization.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies -->
+    <section class="case-studies" id="case-studies">
+        <div class="section-header">
+            <span class="section-tag">Case Studies</span>
+            <h2>Real Results, Real Impact</h2>
+            <p>See how we've transformed businesses across industries with AI-powered solutions.</p>
+        </div>
+        <div class="cases-grid">
+            <div class="case-card">
+                <div class="case-image">
+                    <span class="case-industry">E-COMMERCE</span>
+                </div>
+                <div class="case-content">
+                    <span class="case-tag">AI Customer Support</span>
+                    <h3>Stabilizing Customer Support with AI Agents</h3>
+                    <p>Designed and deployed an AI support system integrated with existing CRM and order management tools. The system autonomously resolves common queries while escalating edge cases to human agents.</p>
+                    <div class="case-metrics">
+                        <div class="metric">
+                            <div class="metric-value">45%</div>
+                            <div class="metric-label">Ticket Reduction</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">24/7</div>
+                            <div class="metric-label">Availability</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">$60K</div>
+                            <div class="metric-label">Annual Savings</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="case-card">
+                <div class="case-image">
+                    <span class="case-industry">FINTECH</span>
+                </div>
+                <div class="case-content">
+                    <span class="case-tag">Process Automation</span>
+                    <h3>Automating Financial Document Review & Classification</h3>
+                    <p>Built a document intelligence pipeline that classifies incoming financial documents, extracts key fields, and routes them through approval workflows with human-in-the-loop validation.</p>
+                    <div class="case-metrics">
+                        <div class="metric">
+                            <div class="metric-value">55%</div>
+                            <div class="metric-label">Time Saved</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">99.5%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">10x</div>
+                            <div class="metric-label">Throughput</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="case-card">
+                <div class="case-image">
+                    <span class="case-industry">HEALTHCARE</span>
+                </div>
+                <div class="case-content">
+                    <span class="case-tag">AI Scheduling Agent</span>
+                    <h3>AI-Assisted Appointment Scheduling System</h3>
+                    <p>Developed an AI-assisted scheduling system combining voice automation with staff oversight, reducing manual workload while preserving service quality.</p>
+                    <div class="case-metrics">
+                        <div class="metric">
+                            <div class="metric-value">40%</div>
+                            <div class="metric-label">No-Show Reduction</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">3000+</div>
+                            <div class="metric-label">Calls/Month</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">4.8★</div>
+                            <div class="metric-label">Patient Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="case-card">
+                <div class="case-image">
+                    <span class="case-industry">REAL ESTATE</span>
+                </div>
+                <div class="case-content">
+                    <span class="case-tag">Lead Generation AI</span>
+                    <h3>AI-Guided Lead Qualification & Outreach</h3>
+                    <p>Implemented an AI-guided outreach system focused on lead qualification, message personalization, and CRM synchronization rather than bulk automation.</p>
+                    <div class="case-metrics">
+                        <div class="metric">
+                            <div class="metric-value">600–800</div>
+                            <div class="metric-label">Leads/Month</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">6–8%</div>
+                            <div class="metric-label">Reply Rate</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">1.6–2.1x</div>
+                            <div class="metric-label">ROI</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="section-header">
+            <span class="section-tag">Testimonials</span>
+            <h2>What Our Clients Say</h2>
+            <p>Hear from businesses that have transformed their operations with our AI solutions.</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"SapienBotics delivered an AI support system that reliably handles a large portion of routine customer inquiries. The solution integrated cleanly with our existing workflows and reduced operational load without disrupting service quality."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MK</div>
+                    <div class="author-info">
+                        <h4>Michael Kim</h4>
+                        <p>CEO, TechRetail Inc.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"The document automation system significantly reduced manual review effort while maintaining accuracy. The team demonstrated a strong understanding of production constraints and data quality."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SP</div>
+                    <div class="author-info">
+                        <h4>Sarah Parker</h4>
+                        <p>CFO, FinanceFlow</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"From initial scoping through deployment, SapienBotics worked methodically and communicated clearly. The final system was stable, well-documented, and easy for our team to adopt."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">JL</div>
+                    <div class="author-info">
+                        <h4>James Lee</h4>
+                        <p>Founder, HealthTech Solutions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--  Section -->
+    
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-bg"></div>
+        <div class="cta-content">
+            <h2>Ready to Transform Your Business with AI?</h2>
+            <p>Schedule a free AI audit call and discover how automation can cut costs, boost efficiency, and accelerate growth.</p>
+            <form action="https://api.web3forms.com/submit" method="POST" class="cta-form" onsubmit="handleQuickSubmit(event)">
+  <input type="hidden" name="access_key" value="cd275bb9-a821-493d-8307-1536175951c9">
+  <input type="hidden" name="subject" value="New SapienBotics Website Inquiry">
+  <input type="hidden" name="from_name" value="SapienBotics Website">
+  <input type="hidden" name="botcheck" style="display:none">
+
+                <input type="email" class="cta-input" placeholder="Enter your email" required>
+                <button type="submit" class="btn-primary">Get Free Audit</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="logo">Sapien<span>botics</span></a>
+                <p>Building intelligent AI solutions that transform businesses. From automation to custom development, we're your AI partner.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">in</a>
+                    <a href="#" class="social-link">𝕏</a>
+                    <a href="#" class="social-link">▶</a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="#services">AI Agents</a></li>
+                    <li><a href="#services">Process Automation</a></li>
+                    <li><a href="#services">AI Development</a></li>
+                    <li><a href="#services">Consulting</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#case-studies">Case Studies</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:support@sapienbotics.com<br>saurabh@sapienbotics.com<br>sapienbotics@gmail.com">support@sapienbotics.com<br>saurabh@sapienbotics.com<br>sapienbotics@gmail.com</a></li>
+                    <li><a href="#">Schedule a Call</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Sapienbotics. All rights reserved.</p>
+            <div>
+                <a href="privacy.html" target="_blank">Privacy Policy</a>
+                <a href="terms.html" target="_blank">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Contact Modal -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div class="modal-header">
+                <h3>Get Your Free AI Audit</h3>
+                <p>Tell us about your business and we'll identify high-impact AI opportunities.</p>
+            </div>
+            <form onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Work Email *</label>
+                    <input type="email" placeholder="john@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" placeholder="Your Company">
+                </div>
+                <div class="form-group">
+                    <label>What service are you interested in?</label>
+                    <select>
+                        <option value="">Select a service</option>
+                        <option value="ai-agents">Autonomous AI Agent Systems</option>
+                        <option value="automation">Workflow Orchestration & Automation</option>
+                        <option value="genai">LLM & Knowledge Systems</option>
+                        <option value="development">Web & Mobile Application Engineering (With or Without AI)</option>
+                        <option value="lead-gen">AI-Powered Lead Generation</option>
+                        <option value="consulting">AI Architecture & Advisory</option>
+                        <option value="other">Other / Not Sure</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tell us about your project or challenge</label>
+                    <textarea placeholder="Describe your business needs..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                    Schedule Free AI Audit →
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            document.querySelector('.mobile-menu').classList.toggle('active');
+            document.querySelector('.mobile-menu-overlay').classList.toggle('active');
+            document.body.style.overflow = document.querySelector('.mobile-menu').classList.contains('active') ? 'hidden' : '';
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('contactModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('contactModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('contactModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('contactModal')) {
+                closeModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Form submission handlers
+        function handleSubmit(e) {
+            e.preventDefault();
+            alert('Thank you! We\'ll be in touch within 24 hours to schedule your free AI audit.');
+            closeModal();
+        }
+
+        function handleQuickSubmit(e) {
+            e.preventDefault();
+            openModal();
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                if (this.getAttribute('href') !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for scroll animations
+        document.querySelectorAll('.service-card, .case-card, .testimonial-card, .pricing-card, .process-step').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Stats counter animation
+        const statNumbers = document.querySelectorAll('.stat-number');
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const text = target.textContent;
+                    const num = parseInt(text.replace(/[^0-9]/g, ''));
+                    if (!isNaN(num) && num > 0) {
+                        animateNumber(target, num, text);
+                    }
+                    statsObserver.unobserve(target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        function animateNumber(element, target, originalText) {
+            const duration = 2000;
+            const start = 0;
+            const startTime = performance.now();
+            const suffix = originalText.replace(/[0-9]/g, '');
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + (target - start) * easeProgress);
+                
+                element.textContent = current + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.textContent = originalText;
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        statNumbers.forEach(stat => statsObserver.observe(stat));
+    </script>
+</body>
+</html>
